@@ -168,6 +168,7 @@ export class GoogleAuth {
     this.scopes = opts.scopes;
     this.jsonContent = opts.credentials || null;
     this.clientOptions = opts.clientOptions;
+    this.accessToken = opts.token || null;
   }
 
   // GAPIC client libraries should always use self-signed JWTs. The following

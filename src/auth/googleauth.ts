@@ -112,7 +112,7 @@ export interface GoogleAuthOptions {
   /**
    * Access Token.
    */
-   token?: string;
+  token?: string;
 }
 
 export const CLOUD_SDK_CLIENT_ID =
@@ -755,7 +755,9 @@ export class GoogleAuth {
     if (this.accessToken) {
       const credential: CredentialBody = {};
       if (this.cachedCredential) {
-        credential.credentials = {access_token: this.cachedCredential.credentials.access_token};
+        credential.credentials = {
+          access_token: this.cachedCredential.credentials.access_token,
+        };
       }
       return credential;
     }

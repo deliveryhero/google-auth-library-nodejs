@@ -1,14 +1,17 @@
 {
-  "name": "google-auth-library",
+  "name": "@deliveryhero/google-auth-library",
   "version": "7.6.0",
   "author": "Google Inc.",
   "description": "Google APIs Authentication Client Library for Node.js",
   "engines": {
     "node": ">=10"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
-  "repository": "googleapis/google-auth-library-nodejs.git",
+  "repository": "deliveryhero/google-auth-library-nodejs.git",
   "keywords": [
     "google",
     "api",

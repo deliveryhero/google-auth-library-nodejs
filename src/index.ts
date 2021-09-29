@@ -58,6 +58,9 @@ export {
   BaseExternalAccountClientOptions,
 } from './auth/baseexternalclient';
 export {DefaultTransporter} from './transporters';
+export {
+  IAccessTokenProvider,
+} from './auth/singletokenclient';
 
 const auth = new GoogleAuth();
 export {auth, GoogleAuth};

@@ -40,7 +40,7 @@ import {
   BaseExternalAccountClient,
 } from './baseexternalclient';
 import {AuthClient} from './authclient';
-import {SingleTokenClient} from './singletokenclient';
+import {IAccessTokenProvider, SingleTokenClient} from './singletokenclient';
 
 /**
  * Defines all types of explicit clients that are determined via ADC JSON
@@ -110,9 +110,9 @@ export interface GoogleAuthOptions {
   projectId?: string;
 
   /**
-   * Access Token.
+   * Access Token Provider
    */
-  token?: string;
+  accessTokenProvider?: IAccessTokenProvider;
 }
 
 export const CLOUD_SDK_CLIENT_ID =
@@ -145,6 +145,8 @@ export class GoogleAuth {
   // To save the access token
   accessToken: string | null = null;
 
+  accessTokenProvider: IAccessTokenProvider | null = null;
+
   cachedCredential: JSONClient | Impersonated | Compute | null = null;
 
   /**
@@ -168,7 +170,7 @@ export class GoogleAuth {
     this.scopes = opts.scopes;
     this.jsonContent = opts.credentials || null;
     this.clientOptions = opts.clientOptions;
-    this.accessToken = opts.token || null;
+    this.accessTokenProvider = opts.accessTokenProvider || null;
   }
 
   // GAPIC client libraries should always use self-signed JWTs. The following
@@ -753,12 +755,10 @@ export class GoogleAuth {
   private async getCredentialsAsync(): Promise<CredentialBody> {
     await this.getClient();
 
-    if (this.accessToken) {
+    if (this.accessTokenProvider) {
       const credential: CredentialBody = {};
       if (this.cachedCredential) {
-        credential.credentials = {
-          access_token: this.cachedCredential.credentials.access_token,
-        };
+        await (this.cachedCredential as SingleTokenClient).getAndUpdateCredentials();
       }
       return credential;
     }
@@ -802,8 +802,9 @@ export class GoogleAuth {
       );
     }
     if (!this.cachedCredential) {
-      if (this.accessToken) {
-        this.cachedCredential = new SingleTokenClient(this.accessToken);
+      if (this.accessTokenProvider) {
+          this.cachedCredential = new SingleTokenClient(this.accessTokenProvider);
+          await this.cachedCredential.getAndUpdateCredentials();
       } else if (this.jsonContent) {
         this._cacheClientFromJSON(this.jsonContent, this.clientOptions);
       } else if (this.keyFilename) {

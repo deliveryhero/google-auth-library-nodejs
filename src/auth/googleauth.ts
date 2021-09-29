@@ -804,6 +804,7 @@ export class GoogleAuth {
     if (!this.cachedCredential) {
       if (this.accessTokenProvider) {
           this.cachedCredential = new SingleTokenClient(this.accessTokenProvider);
+          await this.cachedCredential.getAndUpdateCredentials();
       } else if (this.jsonContent) {
         this._cacheClientFromJSON(this.jsonContent, this.clientOptions);
       } else if (this.keyFilename) {

@@ -803,8 +803,9 @@ export class GoogleAuth {
     }
     if (!this.cachedCredential) {
       if (this.accessTokenProvider) {
-          this.cachedCredential = new SingleTokenClient(this.accessTokenProvider);
-          await this.cachedCredential.getAndUpdateCredentials();
+        const tempClient = new SingleTokenClient(this.accessTokenProvider);
+        await tempClient.getAndUpdateCredentials();
+        this.cachedCredential = tempClient;
       } else if (this.jsonContent) {
         this._cacheClientFromJSON(this.jsonContent, this.clientOptions);
       } else if (this.keyFilename) {
